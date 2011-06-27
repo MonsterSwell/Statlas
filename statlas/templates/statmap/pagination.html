@@ -1,0 +1,22 @@
+{% if is_paginated %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+    <a href="{% url statmap:explore page_obj.previous_page_number %}">&lt; Vorige</a>
+    {% else %}
+    <span class="inactive">&lt; Vorige</span>
+    {% endif %}
+
+    {% for p in page_range %}
+      {% if p == page %}
+      <span class="active">{{ page }}</span>
+      {% else %}
+      <a href="{% url statmap:explore p %}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+    <a href="{% url statmap:explore page_obj.next_page_number %}">Volgende &gt;</a>
+    {% else %}
+    <span class="inactive">Volgende &gt;</span>
+    {% endif %}
+</div>
+{% endif %}

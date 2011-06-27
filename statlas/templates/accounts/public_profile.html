@@ -1,0 +1,6 @@
+{% extends "accounts/profile.html" %}
+
+{% block mapsholder %}
+{% include "accounts/mapsholders/base.html" with title="Public maps" maps=public_maps date_label="made" %}
+{% include "accounts/mapsholders/base.html" with title="Favorite maps" maps=favorite date_label="favorited" %}
+{% endblock %}

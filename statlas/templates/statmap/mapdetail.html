@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{%block title%}{{map.title|capfirst}} &mdash; {%endblock%}
+{% block bodyclass %}page-mapdetail{%endblock %}
+
+{% block content %}
+
+  {% csrf_token %}
+  <script>
+    //links to the datasets
+    window.mapdetail = {};
+    window.mapdetail.regionset = "{{ map.regionset.slug }}",
+    window.mapdetail.dataset = "{{ map.get_json_url }}";
+  </script>
+  <div class="mapholder">
+    <div class="header">
+      <h2>Mapname</h2>
+      {% if user.is_authenticated %}
+        <a href="{% url statmap:create %}?regionset={{ map.regionset.slug }}&amp;dataset={{ map.slug }}" class="button">Edit</a>
+        {% if favorited_by_user %}
+          <a href="#" class="button favbutton">Unfavorite</a>
+        {% else %}
+          <a href="#" class="button favbutton">Favorite</a>
+        {% endif %}
+      {% endif %}
+      <a href="javascript:window.print();" class="button">Print</a>
+      {% if map.public %}
+      <a href="http://statlas.nl/embed/{{ map.slug }}" class="button embedbutton">Embed</a>
+      {% endif %}
+    </div>
+    <div id="map1" class="map-container"></div>
+  </div>
+
+  <div class="code-example">
+    <a href="#"><img src="{{MEDIA_URL}}images/cross-small.png" alt="close" ></a>
+    <p>To embed this map, copy and paste the following code into your website:</p>
+    <code></code>
+  </div>
+
+  <div class="dataholder">
+    <div class="select-area">
+      <div class="header">
+        <h3>Details</h3>
+      </div>
+      <dl>
+        <dt>Name</dt>
+        <dd><a href="{{ map.get_absolute_url }}">
+        {{ map.title|capfirst }}</a></dd>
+
+        <dt>Region</dt>
+        <dd>{{ map.regionset|capfirst }}</dd>
+
+        <dt>Author</dt>
+        <dd><a href="{{ map.author.profile.get_absolute_url }}"><img src="http://img.tweetimag.es/i/{{ map.author.twitter_profile.screen_name }}_n"> {{ map.author }}</a></dd>
+
+        <dt>Description</dt>
+        <dd>{{ map.description }}</dd>
+      </dl>
+
+    </div>
+
+    <div class="data-editor" style="display: block;">
+      <div class="header">
+        <h3>Data</h3>
+      </div>
+      <ul>
+        {% for data in map.data_values.all %}
+        <li class="{% cycle "even" "" %}">
+          <label for="{{ data.region.slug }}">{{ data.region }}</label>
+          <input type="text" disabled="disabled" value="{{ data.value }}" name="{{ data.region.slug }}" id="{{ data.region.slug }}">
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="data-download" style="display:block">
+      <div class="header">
+        <h3>Download data</h3>
+      </div>
+        <ul>
+          <li><a href="{% url statmap:download map.regionset.slug map.slug "csv" %}"><span>{{ map.slug }}.csv</span> <img src="/media/images/csv.png" alt="" /></a></li>
+          <li class="even"><a href="{% url statmap:download map.regionset.slug map.slug "xls" %}"><span>{{ map.slug }}.xls</span> <img src="/media/images/xls.png" alt="" /></a></li>
+        </ul>
+    </div>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{%block title%}Explore &mdash; {%endblock%}
+{% block bodyclass %}page-explore{%endblock %}
+{% load url2png %}
+{% block content %}
+
+<form action="{% url statmap:explore %}" method="post" id="mapform">
+  {% csrf_token %}
+  <div class="mapsholder">
+    <div class="header">
+      <h2>
+        {% if form.is_active %}
+        Search results
+        {% else %}
+        Recent maps
+        {% endif %}
+      </h2>
+    </div>
+    <ul>
+      {% for map in map_list|slice:":16" %}
+      <li>
+        <a href="{{ map.get_absolute_url }}">
+          <div class="screenshot" style="background:url('{{ map.slug|url2png }}') no-repeat center"></div>
+          <h3>{{ map.title|capfirst }}, {{ map.regionset|capfirst }}</h3>
+          <p>made by <strong>{{ map.author|capfirst }}</strong></p>
+        </a>
+      </li>
+      {% empty %}
+      <p>No maps found for your search query.</p>
+      {% endfor %}
+    </ul>
+
+    {% include 'statmap/pagination.html' %}
+  </div>
+
+
+  <div class="dataholder">
+    <div class="select-area">
+      <div class="header">
+        <h3>Select regions</h3>
+      </div>
+      {{ form.regionset }}
+    </div>
+
+    <div class="filteroptions">
+      <div class="header">
+        <h3>Search</h3>
+      </div>
+      {{ form.free_search }}
+    </div>
+
+  <div class="intro">
+    <div class="header">
+      <h2>Welcome</h2>
+    </div>
+    
+    <p>Statlas is a tool to enable laypeople to easily visualize mappings of a
+    set of values to a set of regions in a way that is interesting, useful and
+    beautiful.</p>
+    
+    <h3>Get started</h3>
+    
+    <p>Go to <a href="http://statlas.nl/create/">Create</a> and after logging in via Twitter, choose a region set to fill in data for and off you are. Send bugs, feedback and other comments to us over at <a href="http://monsterswell.com/blog/contact/">Monster Swell</a>.</p>
+  </div>
+  </div>
+
+</form>
+{% endblock %}
+

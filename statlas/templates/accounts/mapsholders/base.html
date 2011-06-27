@@ -1,0 +1,23 @@
+{% load humanize_dev url2png %}
+{% if maps %}
+<div class="header">
+  <h2>{{ title }}</h2>
+</div>
+
+<ul>
+  {% for map in maps %}
+  <li>
+    <a href="{{ map.get_absolute_url }}">
+      <div class="screenshot" style="background:url('{{map.slug|url2png }}') no-repeat center"></div>
+      <h3>{{ map.title }}, {{ map.regionset }}</h3>
+      {% if use_change_date %}
+      <p>changed <strong>{{ map.date_changed|naturaltime }}</strong></p>
+      {% else %}
+      <p>{{ date_label }} <strong>{{ map.date_created|naturaltime }}</strong></p>
+      {% endif %}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+

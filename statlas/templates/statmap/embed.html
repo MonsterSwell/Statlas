@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Statlas</title>
+  <link rel="stylesheet" href="{{MEDIA_URL}}css/style.css" charset="utf-8">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="{{MEDIA_URL}}js/jquery.tipsy.js"></script>
+  <script src="{{MEDIA_URL}}js/polymaps.min.js"></script>
+  <script src="{{MEDIA_URL}}js/base.js"></script>
+</head>
+
+<body class="embed page-mapdetail">
+  {% csrf_token %}
+  <script>
+    //links to the datasets
+    window.mapdetail = {};
+    window.mapdetail.regionset = "{{ map.regionset.slug }}",
+    window.mapdetail.dataset = "{{ map.get_json_url }}";
+  </script>
+  <div class="mapholder">
+    <div id="map1" class="map-container"></div>
+    <div class="logo"><img src="{{MEDIA_URL}}images/logo2.png" alt="Statlas"></div>
+  </div>
+
+  <div class="dataholder">
+    <div class="data-editor">
+      <ul>
+        {% for data in map.data_values.all %}
+        <li class="{% cycle "even" "" %}>
+          <label for="{{ data.region.slug }}">{{ data.region }}</label>
+          <input type="text" disabled="disabled" value="{{ data.value }}" name="{{ data.region.slug }}" id="{{ data.region.slug }}">
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+</body>
+</html>
+

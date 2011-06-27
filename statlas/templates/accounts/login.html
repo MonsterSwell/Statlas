@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>Login &mdash; Statlas</title>
+  <link rel="stylesheet" href="{{MEDIA_URL}}css/style.css" charset="utf-8">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+  <script src="{{MEDIA_URL}}js/jquery.tipsy.js"></script>
+  <script src="{{MEDIA_URL}}js/polymaps.min.js"></script>
+  <script src="{{MEDIA_URL}}js/base.js"></script>
+</head>
+<body class="loginpage">
+
+<div class="logindiv">
+  <div class="logohead">
+    <a href="/"><img src="{{MEDIA_URL}}images/logo.png" alt="Statlas"></a>
+  </div>
+  <div class="header">
+    <h2>Please sign in first</h2>
+  </div>
+  <p>You need to be logged in to create maps.</p>
+  {% load twitter_tags %}
+  {% twitter_button %}
+  <small>Or go back to the <a href="javascript:history.go(-1);">previous page</a></small>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block bodyclass %}page-about{%endblock %}
+
+{% block content %}
+  <img src="{{MEDIA_URL}}images/teaser.png" alt="" style="float: right;" />
+  <div class="inner">
+     
+    <h2>Statlas</h2>
+    
+    <p>Statlas is a tool to enable laypeople to easily visualize mappings from a set of values to a set of regions in a way that is interesting, useful and beautiful.</p>
+    
+    <p>The current version (blog post) is very much in beta, but wholly functional for the regions currently provided.</p>
+    
+    <h2>Feedback</h2>
+    
+    <p>This is an beta release geared towards the Netherlands, but Statlas is intended to be a general mapping tool. We are working towards adding more regions for any geographical/administrative definition you can imagine. You can help us by voicing your demands and pointing us towards appropriately licensed geometry (in Shapefiles or other).</p>
+    
+    <p>Any and all feedback can be directed <a href="http://monsterswell.com/blog/contact/">here</a> until more specific channels are available.</p>
+    
+    <h2>Credits</h2>
+    
+    <p>Statlas is created by <a href="http://monsterswell.com">Monster Swell</a> in collaboration with <a href="http://fluxility.com">Fluxility</a>, and <a href="http://cargocollective.com/alexanderzeh#110413/Alexander-Zeh">Alexander Zeh</a> with funding from <a href="http://stimuleringsfonds.nl">the Dutch Fund for Press Innovation</a>. The cartography is powered by <a href="http://polymaps.org/">Polymaps</a> and thumbnails are generously provided by <a href="http://url2png.com">url2png</a>.</p>
+    
+    <p>The source code is available at <a href="https://github.com/MonsterSwell/Statlas">Github</a>.</p>
+    
+  </div>
+{% endblock %}
+

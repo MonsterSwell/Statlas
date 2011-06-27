@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{%block title%}Create a new map &mdash; {%endblock%}
+{% block bodyclass %}page-create{%endblock %}
+
+{% block content %}
+
+<form action="/create/save/" method="post" id="mapform" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="mapholder">
+    <div class="header">
+      <h2>Map name</h2>
+    </div>
+    <div id="map1" class="map-container"></div>
+  </div>
+
+  <div class="dataholder">
+    <div class="select-area">
+      <div class="header">
+        <h3>Select regions</h3>
+      </div>
+      {{ form.regionset }}
+    </div>
+
+    <div class="select-data">
+      <div class="header">
+        <h3>Select dataset</h3>
+      </div>
+    </div>
+
+    <div class="data-editor">
+      <div class="header">
+        <h3>Edit dataset</h3>
+      </div>
+    </div>
+
+    <div class="data-upload">
+      <div class="header">
+        <h3>Upload dataset</h3>
+      </div>
+      <div  class="content">
+        <p> <img src="/media/images/warning.png" alt="" /> Uploading a dataset will overwrite any changes you made above! </p>
+        <label for="dataupload">Upload an .csv, .xls or .xlsx dataset</label>
+        <input type="file" name="dataupload" id="dataupload" onchange="$.statlas.handleFiles(this.files)">
+        <button id="clearUpload">Clear upload</button>
+      </div>
+    </div>
+
+    <div class="data-download">
+      <div class="header">
+        <h3>Download dataset</h3>
+      </div>
+        <p> <img src="/media/images/warning.png" alt="" /> The dataset has been changed. Save before downloading to prevent data loss! </p>
+        <ul>
+          <li><a href="dataset.csv"><span>dataset.csv</span> <img src="/media/images/csv.png" alt="" /></a></li>
+          <li class="even"><a href="dataset.csv"><span>dataset.xls</span> <img src="/media/images/xls.png" alt="" /></a></li>
+        </ul>
+    </div>
+  </div>
+
+  <div class="meta horizontalForm">
+    <div class="header">
+      <h3>Map information</h3>
+    </div>
+    <div class="content">
+      <label for="id_title">Title *</label>
+      <input id="id_title" type="text" name="title" maxlength="100">
+
+      <p><label><input checked="checked" type="checkbox" name="public" id="id_public"> This map is publicly accessible</label></p>
+
+      <label for="id_description">Description</label>
+      <textarea id="id_description" rows="10" cols="40" name="description"></textarea>
+      <p id="sharelink">Share your map using this link: <a href="#"></a></p>
+
+      <button type="submit" class="button" id="savemap">Save this map</button>
+
+    </div>
+  </div>
+</form>
+{% endblock %}
+

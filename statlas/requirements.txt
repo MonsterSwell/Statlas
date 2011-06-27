@@ -1,0 +1,6 @@
+Django
+django-config
+markdown
+django-socialregistration
+django-debug-toolbar
+

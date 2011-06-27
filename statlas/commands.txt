@@ -1,0 +1,7 @@
+git clone git@host.fluxility.com:statlas.git
+
+to djangy:
+git push djangy master
+
+to server:
+git push origin master

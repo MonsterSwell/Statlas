@@ -1,0 +1,14 @@
+{% extends "accounts/profile.html" %}
+{% load humanize %}
+
+{% block user_statistics %}
+<ul>
+  <li class="even">You have <strong>{{ user.data_sets.count|apnumber }} map{{ user.data_sets.count|pluralize }}</strong></li>
+</ul>
+{% endblock %}
+
+{% block mapsholder %}
+{% include "accounts/mapsholders/base.html" with title="Recently edited" maps=recently_changed use_change_date=1 date_label="changed" %}
+{% include "accounts/mapsholders/base.html" with title="Favorite maps" maps=favorite date_label="favorited" %}
+{% include "accounts/mapsholders/base.html" with title="Recently viewed" maps=recently_viewed date_label="viewed" %}
+{% endblock %}

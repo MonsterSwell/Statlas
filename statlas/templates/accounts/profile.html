@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{%block title%}Your profile &mdash; {%endblock%}
+{% block bodyclass %}page-profile{%endblock %}
+{% block content %}
+{% load humanize humanize_dev %}
+
+
+  <div class="dataholder">
+    <div class="user">
+      <div class="header">
+        <h3>
+          <a href="http://twitter.com/{{ user.twitter_profile.screen_name }}">
+            <img src="http://img.tweetimag.es/i/{{ user.twitter_profile.screen_name }}_n">
+            {{ user.twitter_profile.screen_name|capfirst }}
+          </a>
+        </h3>
+      </div>
+      {% block user_statistics %}
+      <ul>
+        <li class="even">{{ user.twitter_profile.screen_name|capfirst }} has <strong>{{ user.data_sets.count|apnumber }} map{{ user.data_sets.count|pluralize }}</strong></li>
+      </ul>
+      {% endblock %}
+    </div>
+
+   {% if history %}
+    <div class="history">
+      <div class="header">
+        <h3>History</h3>
+      </div>
+      <ul>   
+      {% for entry in history %}
+        <li class="{% cycle 'even' '' %}">
+        {{ entry.get_action_display|capfirst }}
+        <a href="{{ entry.get_edited_object.get_absolute_url }}">
+          {{entry.get_edited_object}}
+        </a>
+        {{ entry.action_time|naturaltime }}
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+
+  </div>
+  
+
+  <div class="mapsholder">
+  {% block mapsholder %}
+  {% endblock %}
+  </div>
+{% endblock %}
+
