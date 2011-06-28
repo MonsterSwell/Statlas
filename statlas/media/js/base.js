@@ -137,7 +137,6 @@
             $("#id_description").val(data.meta.description);
             $("#id_public").attr("checked", data.meta.public);
             that.dataset = {};
-            that.dataset.author = data.meta.author || "";
             that.dataset.slug = data.meta.dataset || "empty";
 
             //zoom and pan
@@ -247,13 +246,17 @@
 
       $(".data-editor input").live("blur", function () {
         clearTimeout(window.blinkTimeout);
+        $.statlas.blink = false;
 
         $(this).siblings().css("color","");
         that.setMinMax();
 
         $.maps.setColors(that.valobject);
         $("#savemap").text("Save this map").show();
-      }).live("focus", function () {
+      }).unbind("focus").bind("focus", function (e) {
+        clearTimeout(window.blinkTimeout);
+        $.statlas.blink = true;
+
         var blink = function ($path, i) {
           var color = ["#777", "#333"];
           $path.css({"fill":color[i]});
@@ -265,9 +268,13 @@
           }
           var innerfunc= function() {
             blink($path, i);
+          };
+          if($.statlas.blink) {
+            clearTimeout(window.blinkTimeout);
+            window.blinkTimeout = setTimeout(innerfunc, 1000);
           }
-          window.blinkTimeout = setTimeout(innerfunc, 1000);
-        }
+
+        };
         blink($("path[name=" + $(this).attr("name") + "]"), 0);
 
         $(this).siblings().css("color","#000");
@@ -335,10 +342,9 @@
       dataObj.meta.title = $("#id_title").val();
       dataObj.meta.description = $("#id_description").val();
       dataObj.meta.public = $("#id_public").attr("checked");
-      //dataObj.meta.author = that.dataset.author; --> Wout: Server has to determine the author!
       dataObj.meta.zoom = $.maps.map.zoom();
-      dataObj.meta.latitude = $.maps.map.center().lat
-      dataObj.meta.longitude = $.maps.map.center().lon
+      dataObj.meta.latitude = $.maps.map.center().lat;
+      dataObj.meta.longitude = $.maps.map.center().lon;
       dataObj.meta.regionset = $("#id_regionset").val();
       dataObj.meta.dataset = that.dataset.slug;
       dataObj.csrfmiddlewaretoken = $("input[name='csrfmiddlewaretoken']").val();
@@ -403,10 +409,11 @@
       }
 
     },
-    loading: function (text) {
+    loading: function (text, delay) {
       text = text || "Loading...";
+      delay = delay || 500;
       $("#loading").remove();
-      $("<div id='loading'>").text(text).appendTo("body").fadeIn(500);
+      $("<div id='loading'>").text(text).appendTo("body").fadeIn(delay);
     },
     doneLoading: function () {
       $("#loading").stop().fadeOut(500, function () {
@@ -419,7 +426,7 @@
           text = "statlas.nl/map/" + slug + "/";
 
       txt.fadeOut(100, function () {
-        if(slug != "empty") {
+        if(slug != "empty" && $("#id_public").is(":checked")) {
           txt.find("a").text(text).attr("href", href).end().fadeIn(100);
         }
 
@@ -485,17 +492,18 @@
     this.map.add(this.geoJsonLayer);
 
     //add compass
+    var zoom;
     if($("body").hasClass("embed")) {
-      var zoom = "small";
+      zoom = "small";
     } else {
-      var zoom = "big";
+      zoom = "big";
     }
     this.map.add(po.compass().position("top-right").pan("none").zoom(zoom));
 
   },
   load: function load(e, context, id, callback) {
     var that = context;
-
+    $.statlas.loading("Loading...", 10);
     that.mapelement = e;
     $.statlas.regioList = [];
     for (var i = 0; i < e.features.length; i++) {
@@ -516,27 +524,36 @@
           fallback: "onbekend",
           fade:true,
           html:true,
-          gravity: "w",
+          gravity: "w"
         }).bind("click", function () {
+          clearTimeout(window.blinkTimeout);
           $("#"+ $(this).attr("name")).focus();
         }).css({"cursor":"pointer"});
-
       //focus on first
-      if(i==1) {
-        that.map.center({
-          lat: feature.data.geometry.coordinates[0][0][0][1],
-          lon: feature.data.geometry.coordinates[0][0][0][0]
-        });
+      if(i==0) {
+        var lat = feature.data.geometry.coordinates[0][0][0][1],
+            lon = feature.data.geometry.coordinates[0][0][0][0];
+        if (lat != undefined && lon != undefined) {
+          that.map.center({
+            lat: lat,
+            lon: lon
+          });
+        }
       }
     }
 
     //set color!
     that.setColors($.statlas.valobject);
+
+    //done loading
+    $.statlas.doneLoading();
+
     //do callback
     if(!$.statlas.noInitCallback) {
       $.statlas.noInitCallback = true;
       callback();
     }
+
 
   },
   setColors: function(valobject) {
@@ -601,14 +618,11 @@
 
 
 //python convenience funcs
-String.prototype.startsWith = function(str)
-{return (this.match("^"+str)==str)}
+String.prototype.startsWith = function(str) {return (this.match("^"+str)==str);}
 
-String.prototype.endsWith = function(str)
-{return (this.match(str+"$")==str)}
+String.prototype.endsWith = function(str) {return (this.match(str+"$")==str);}
 
-String.prototype.trim = function(){return
-(this.replace(/^[\s\xA0]+/, "").replace(/[\s\xA0]+$/, ""))}
+String.prototype.trim = function(){ return (this.replace(/^[\s\xA0]+/, "").replace(/[\s\xA0]+$/, ""));}
 
 //special cases
 $.statlas.specialNameValues = {
@@ -624,7 +638,7 @@ $.statlas.specialNameValues = {
   "sgp": ["sgp", "staatkundig gereformeerde partij"],
   "lpf": ["lpf", "lijst pim fortuyn"],
   "gpv": ["gpv", "gereformeerd politiek verbond"]
-}
+};
 
 $.statlas.specialValues = {
   "cda": "rgb(254,119,12)",
@@ -639,7 +653,7 @@ $.statlas.specialValues = {
   "sgp": "rgb(100, 100, 100)",
   "lpf": "rgb(175, 100, 0)",
   "gpv": "rgb(175, 175, 175)"
-}
+};
 
 //all known color keywords plus function for checker
 $.statlas.colorArray = [

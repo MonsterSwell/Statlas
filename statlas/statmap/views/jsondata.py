@@ -79,8 +79,8 @@ def data_set_list(request, region_set_slug):
     try:
         region_set = RegionSet.visible_objects.get(slug=region_set_slug)
     except RegionSet.DoesNotExist:
-        raise Http404('Region set does not exsist')    
-    
+        raise Http404('Region set does not exist')
+
     q = get_public_data_set_querset(request.user)
 
     data_sets = region_set.data_sets\
@@ -125,11 +125,11 @@ def data_set(request, region_set_slug, data_set_slug):
         `slug` set to 'empty'.
     """
     data_set = get_data_set(request.user, data_set_slug, region_set_slug)
-    
+
     values = {}
     for k,v in data_set.data_values.by_region(data_set.regionset).items():
         values[k] = v.value
-    
+
     data_set_return = \
     {
         'values': values,
@@ -139,7 +139,7 @@ def data_set(request, region_set_slug, data_set_slug):
             'dataset': data_set.slug,
             'public': data_set.public,
             'description': data_set.description,
-            'author': 'Not implemented yet',
+            #'author': unicode(data_set.author),
             'zoom': data_set.zoom,
             'latitude': data_set.latitude,
             'longitude': data_set.longitude,
